@@ -1,0 +1,24 @@
+{
+  "name": "fast-js",
+  "version": "1.0.0",
+  "description": "CLI & Node.js library for Netflix' fast.com speedtesting service",
+  "main": "fast.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thelmgn/fast-js.git"
+  },
+  "keywords": [
+    "fast",
+    "speedtest",
+    "cli"
+  ],
+  "author": "theLMGN",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thelmgn/fast-js/issues"
+  },
+  "homepage": "https://github.com/thelmgn/fast-js#readme"
+}
