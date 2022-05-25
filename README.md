@@ -27,7 +27,8 @@ $ /fast.js --help
 Options:
   -s <number>  The amount of servers to test (default: 5)
   -t <number>  The amount of threads per server (default: 1)
-  -d <number>  The duration of the test (default: 5000)
+  -d <number>  The duration of the test (default: 5)
+  -f [4|6]     IP address family (IPv4/6) to use. If not specified, both will be used.
   -j           Output in JSON format
 ```
 ```sh 
