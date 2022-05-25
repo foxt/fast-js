@@ -13,6 +13,9 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 const https = require("https");
 const FAST_TOKEN = "YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm";
 
+// variable to define if user prefers IPv4 or IPv6
+let preferedFamily;
+
 /**
  * Gets a JSON object from a URL
  * @param {string} url The URL to get the JSON from
@@ -20,7 +23,7 @@ const FAST_TOKEN = "YXNkZmFzZGxmbnNkYWZoYXNkZmhrYWxm";
  */
 function getJson(url) {
     return new Promise((resolve, reject) => {
-        https.get(url, res => {
+        https.get(url,{family:preferedFamily}, res => {
             let data = "";
             res.on("data", chunk => {
                 data += chunk;
@@ -41,7 +44,7 @@ function getJson(url) {
  */
 function testDownload(url) {
     return new Promise((resolve, reject) => {
-        https.get(url, res => {
+        https.get(url,{family:preferedFamily}, res => {
             var bytes = 0;
             var startTime = Date.now();
             res.on("data", chunk => {
@@ -104,7 +107,7 @@ function getFastServers(amnt) {
 async function runSpeedTest(serverCount,threadPerServer, duration, verbose) {
     var servers = await getFastServers(serverCount);
     if (verbose) servers.targets.forEach(target => target.name = target.url.replace("https://", "").replace(/.oca.ntflxvideo.net.+/,""));
-    if (verbose) console.log ("We are " + servers.client.ip + " ( AS" + servers.client.asn + ") in " + servers.client.location.city + ", " + servers.client.location.country);
+    if (verbose) console.log ("We are " + servers.client.ip + " (AS" + servers.client.asn + ") in " + servers.client.location.city + ", " + servers.client.location.country);
     if (verbose) console.log("Testing against " + servers.targets.length + " servers (" +  servers.targets.map(t => t.location.city + ", " + t.location.country).join(", ") + ")");
     var threads = [];
     for (var server of servers.targets) {
@@ -147,7 +150,8 @@ if (require.main === module) {
         serverCount: 5,
         threadPerServer: 1,
         duration: 5000,
-        json: false
+        json: false,
+        family: undefined,
     }
     while (arg) {
         if (arg === "-s") {
@@ -156,18 +160,22 @@ if (require.main === module) {
             opts.threadPerServer = parseInt(process.argv.shift());
         } else if (arg === "-d") {
             opts.duration = parseInt(process.argv.shift()) * 1000;
+        } else if (arg === "-f") {
+            opts.family = parseInt(process.argv.shift());
         } else if (arg === "-j") {
             opts.json = true;
         } else if (arg === "--help") {
             console.log("Options:");
             console.log("  -s <number>  The amount of servers to test (default: 5)");
             console.log("  -t <number>  The amount of threads per server (default: 1)");
-            console.log("  -d <number>  The duration of the test (default: 5000)");
+            console.log("  -d <number>  The duration of the test (default: 5)");
+            console.log("  -f [4|6]     IP address family (IPv4/6) to use. If not specified, both will be used.");
             console.log("  -j           Output in JSON format");
             process.exit(0);
         }
         arg = process.argv.shift();
     }
+    preferedFamily = opts.family;
     runSpeedTest(opts.serverCount, opts.threadPerServer, opts.duration, !opts.json).then(results => {
         if (opts.json) console.log(JSON.stringify(results));
     })
