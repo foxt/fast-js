@@ -1,6 +1,6 @@
 {
   "name": "fast-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CLI & Node.js library for Netflix' fast.com speedtesting service",
   "main": "fast.js",
   "scripts": {
